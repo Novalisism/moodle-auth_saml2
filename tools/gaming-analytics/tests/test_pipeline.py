@@ -11,7 +11,12 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, ROOT)
 
 from gaming_analytics import pipeline, rank, report, wikipedia  # noqa: E402
-from gaming_analytics.httpclient import Http, HttpError  # noqa: E402
+from gaming_analytics.httpclient import (  # noqa: E402
+    Http,
+    HttpError,
+    ProxyAuthError,
+    _is_proxy_auth_failure,
+)
 from gaming_analytics.playerscale import (  # noqa: E402
     PlayerScaleEstimator,
     human,
@@ -189,6 +194,46 @@ class TestHttpCache(unittest.TestCase):
             body, cached = http.get_text("https://x/y")
             self.assertTrue(cached)
             self.assertEqual(json.loads(body)["ok"], True)
+
+
+class TestProxyHandling(unittest.TestCase):
+    def test_407_is_recognised_as_a_proxy_auth_failure(self):
+        self.assertTrue(
+            _is_proxy_auth_failure(
+                OSError("Tunnel connection failed: 407 Proxy Authentication Required")
+            )
+        )
+        self.assertFalse(_is_proxy_auth_failure(OSError("connection reset by peer")))
+        self.assertFalse(_is_proxy_auth_failure(OSError("HTTP 407")))  # no proxy wording
+
+    def test_proxy_auth_fails_fast_instead_of_retrying(self):
+        """Four backoff rounds per URL cannot fix missing credentials."""
+        import urllib.error
+
+        with tempfile.TemporaryDirectory() as tmp:
+            http = Http(cache_dir=tmp, retries=4, min_interval=0)
+            calls = []
+
+            class FakeOpener:
+                def open(self, req, timeout=None):
+                    calls.append(req.full_url)
+                    raise urllib.error.URLError(
+                        "Tunnel connection failed: 407 Proxy Authentication Required"
+                    )
+
+            http._opener = FakeOpener()
+            with self.assertRaises(ProxyAuthError) as ctx:
+                http.get_text("https://example.invalid/x", use_cache=False)
+            self.assertEqual(len(calls), 1)
+            self.assertIn("run.py doctor", str(ctx.exception))
+
+    def test_explicit_proxy_is_installed_on_the_opener(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            http = Http(cache_dir=tmp, proxy="http://127.0.0.1:7890")
+            self.assertEqual(http.proxy, "http://127.0.0.1:7890")
+            self.assertTrue(any(
+                type(h).__name__ == "ProxyHandler" for h in http._opener.handlers
+            ))
 
 
 class TestEndToEnd(unittest.TestCase):

@@ -79,6 +79,8 @@ python run.py all
 | 现象 | 原因 / 处理 |
 |---|---|
 | `python` 不是内部或外部命令 | 安装时没勾 `Add python.exe to PATH`，重装 |
+| 满屏 `407 Proxy Authentication Required` | 你的网络要经过需要账号密码的代理。先跑 `python run.py doctor` 看用的是哪个代理，再按它给的三种解法选一种（本地代理软件端口 / 带账号密码的 `--proxy` / 关掉系统代理） |
+| 想先确认环境有没有问题 | `python run.py doctor` —— 一条命令看 Python、代理、五个数据源分别通不通 |
 | 卡在 Wikipedia 或 Steam 很久 | 网络连不上这两个站，改用 `python run.py all --no-wikipedia --no-steam` |
 | 提示 quota / 配额用尽 | 当天 10,000 点用完了，太平洋时间午夜自动重置；或加 `--no-search` 只花 24 点 |
 | 想省额度先试试水 | `python run.py all --no-search`（跳过最贵的搜索，只拿频道数据） |
@@ -95,11 +97,12 @@ python run.py all
 | `selftest` | 用 `tests/fixtures/raw_sample.json` 跑通分析+渲染 | 不需要 | 0 |
 | `resolve` | 按名字查 Steam appid、按 handle 查 channel id | 需要 | ~20 单位 |
 | `collect` | 抓取全部原始数据 → `out/raw.json` | 需要 | 见下 |
+| `doctor` | 体检：Python 版本、代理设置、五个数据源连通性 | 需要 | 0 |
 | `report` | 只读 `raw.json` 出报告和 CSV | 不需要 | 0 |
 | `all` | `collect` + `report` | 需要 | 见下 |
 | `verify` | 列出所有人工录入的数字及其过期天数 | 不需要 | 0 |
 
-常用开关：`--no-search`（跳过最贵的 search.list）、`--offline`（全部走缓存）、
+常用开关：`--proxy http://127.0.0.1:7890`（走本地代理软件）、`--no-search`（跳过最贵的 search.list）、`--offline`（全部走缓存）、
 `--verified-only`（忽略 `verified=false` 的人工数字）、`--cache-ttl`（默认 86400 秒）。
 
 ### 配额预算 / Quota budget

@@ -27,6 +27,29 @@ DEFAULT_UA = (
 _SECRET_PARAMS = {"key", "api_key", "apikey", "token", "access_token"}
 
 
+class ProxyAuthError(RuntimeError):
+    """The machine sits behind a proxy that wants credentials.
+
+    Retrying cannot fix this, so it is raised on the first occurrence instead
+    of burning four backoff rounds per URL.
+    """
+
+    def __init__(self, host: str, detail: str):
+        super().__init__(
+            f"Proxy authentication required while reaching {host} ({detail}).\n"
+            "  网络需要经过代理，且该代理要求账号密码。\n"
+            "  Run `python run.py doctor` to see which proxy your machine is using, then either\n"
+            "    - pass credentials:  --proxy http://USER:PASSWORD@HOST:PORT\n"
+            "    - or point at a local proxy client:  --proxy http://127.0.0.1:7890\n"
+            "    - or clear the system proxy if the sites are reachable without it."
+        )
+        self.host = host
+
+
+def _is_proxy_auth_failure(exc: Exception) -> bool:
+    return "407" in str(exc) and "roxy" in str(exc)
+
+
 class HttpError(RuntimeError):
     def __init__(self, status: int, url: str, body: str = ""):
         super().__init__(f"HTTP {status} for {url}: {body[:300]}")
@@ -64,6 +87,7 @@ class Http:
         ttl_seconds: int = 24 * 3600,
         timeout: int = 30,
         retries: int = 4,
+        proxy: Optional[str] = None,
         min_interval: float = 0.25,
         user_agent: Optional[str] = None,
         offline: bool = False,
@@ -76,7 +100,13 @@ class Http:
         self.min_interval = min_interval
         self.user_agent = user_agent or os.environ.get("GA_USER_AGENT", DEFAULT_UA)
         self.offline = offline
+        self.proxy = proxy
         self.stats = stats or FetchStats()
+        if proxy:
+            handler = urllib.request.ProxyHandler({"http": proxy, "https": proxy})
+            self._opener = urllib.request.build_opener(handler)
+        else:
+            self._opener = urllib.request.build_opener()
         self._last_call: Dict[str, float] = {}
         os.makedirs(self.cache_dir, exist_ok=True)
 
@@ -158,7 +188,7 @@ class Http:
             self._throttle(host)
             try:
                 req = urllib.request.Request(full, headers=req_headers)
-                with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                with self._opener.open(req, timeout=self.timeout) as resp:
                     raw = resp.read()
                     if resp.headers.get("Content-Encoding") == "gzip":
                         raw = gzip.decompress(raw)
@@ -169,6 +199,9 @@ class Http:
                     self._write_cache(key, full, body)
                 return body, False
             except urllib.error.HTTPError as exc:
+                if exc.code == 407:
+                    self.stats.errors += 1
+                    raise ProxyAuthError(host, "HTTP 407") from exc
                 body = exc.read().decode("utf-8", errors="replace") if exc.fp else ""
                 # 4xx other than rate limiting will not get better by retrying.
                 if exc.code not in (408, 429) and exc.code < 500:
@@ -176,6 +209,9 @@ class Http:
                     raise HttpError(exc.code, full, body) from exc
                 last_exc = HttpError(exc.code, full, body)
             except (urllib.error.URLError, TimeoutError, OSError) as exc:
+                if _is_proxy_auth_failure(exc):
+                    self.stats.errors += 1
+                    raise ProxyAuthError(host, str(exc)) from exc
                 last_exc = exc
             if attempt < self.retries:
                 self.stats.retries += 1

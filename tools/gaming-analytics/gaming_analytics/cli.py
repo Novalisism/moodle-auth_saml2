@@ -10,7 +10,7 @@ import sys
 from typing import Any, Dict, Optional
 
 from . import pipeline
-from .httpclient import FetchStats, Http
+from .httpclient import FetchStats, Http, ProxyAuthError
 from .playerscale import human, parse_as_of
 from .report import render_markdown, write_csvs
 from .steam import Steam, SteamSpy
@@ -43,6 +43,7 @@ def _http(args) -> Http:
         cache_dir=args.cache,
         ttl_seconds=args.cache_ttl,
         offline=getattr(args, "offline", False),
+        proxy=getattr(args, "proxy", None) or os.environ.get("HTTPS_PROXY") or None,
         stats=FetchStats(),
     )
 
@@ -176,6 +177,82 @@ def cmd_selftest(args) -> int:
     return 0
 
 
+
+CHECKS = [
+    ("YouTube (必需 / required)", "https://www.googleapis.com/youtube/v3/videos?part=id&id=dQw4w9WgXcQ"),
+    ("Steam 在线人数 / current players", "https://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid=730"),
+    ("Steam 商店 / store", "https://store.steampowered.com/api/storesearch/?term=dota&cc=us&l=en"),
+    ("SteamSpy", "https://steamspy.com/api.php?request=appdetails&appid=570"),
+    ("Wikipedia", "https://en.wikipedia.org/w/api.php?action=query&format=json&meta=siteinfo"),
+]
+
+
+def cmd_doctor(args) -> int:
+    """Print environment + proxy + per-host reachability, in plain language."""
+    import platform
+    import urllib.request
+
+    print("== 环境 / environment ==")
+    print(f"  Python {platform.python_version()} on {platform.system()} {platform.release()}")
+    print(f"  API key: {'已设置 / set' if (args.api_key or os.environ.get('YOUTUBE_API_KEY')) else '未设置 / MISSING'}")
+
+    print("\n== 代理 / proxy ==")
+    # getproxies() also surfaces npm_/yarn_/docker_ env vars; only the real
+    # scheme keys matter, and the noise buries the one line that does.
+    detected = {
+        k: v for k, v in urllib.request.getproxies().items()
+        if k in ("http", "https", "ftp", "all", "no")
+    }
+    chosen = args.proxy or os.environ.get("HTTPS_PROXY") or detected.get("https") or detected.get("http")
+    if detected:
+        for scheme, value in sorted(detected.items()):
+            shown = value if len(value) < 90 else value[:87] + "..."
+            print(f"  系统检测到 / detected {scheme}: {shown}")
+    else:
+        print("  系统未设置代理 / no system proxy detected")
+    print(f"  本次使用 / using: {chosen or '不走代理 (direct)'}")
+
+    print("\n== 连通性 / reachability ==")
+    key = args.api_key or os.environ.get("YOUTUBE_API_KEY", "")
+    failures, proxy_auth = [], False
+    for label, url in CHECKS:
+        http = Http(cache_dir=args.cache, ttl_seconds=0, timeout=15, retries=0,
+                    proxy=chosen, stats=FetchStats())
+        target = url + (f"&key={key}" if "googleapis" in url and key else "")
+        try:
+            http.get_text(target, use_cache=False)
+            print(f"  [OK]   {label}")
+        except ProxyAuthError:
+            proxy_auth = True
+            failures.append(label)
+            print(f"  [407]  {label} - 代理要求账号密码 / proxy wants credentials")
+        except Exception as exc:
+            detail = str(exc)
+            # A 403 from Google means we reached Google - the key is the issue, not the network.
+            if "HTTP 403" in detail and "googleapis" in target:
+                print(f"  [OK]   {label} (可达，但 key 被拒 / reachable, key rejected)")
+                continue
+            failures.append(label)
+            print(f"  [FAIL] {label} - {detail.splitlines()[0][:110]}")
+
+    print("\n== 结论 / verdict ==")
+    if proxy_auth:
+        print("  你的网络必须经过一个需要账号密码的代理。三种解法，任选其一：")
+        print("  Your network forces an authenticating proxy. Pick one:")
+        print("   1) 如果你在用梯子/代理软件（Clash、V2Ray 等）：在软件里找到 HTTP 端口（常见 7890），然后")
+        print("      $env:HTTPS_PROXY=\"http://127.0.0.1:7890\"   再重跑")
+        print("   2) 如果是公司代理：python run.py all --proxy http://用户名:密码@代理地址:端口")
+        print("   3) 如果这些网站本来就能直接打开：关掉系统代理后重跑")
+    elif not failures:
+        print("  全部通过，可以直接跑 python run.py all")
+    else:
+        blocked = ", ".join(failures)
+        print(f"  连不上：{blocked}")
+        print("  YouTube 连不上则无法出数；Steam/Wikipedia 连不上可以先跳过：")
+        print("  python run.py all --no-steam --no-wikipedia")
+    return 0 if not failures else 1
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="run.py",
@@ -189,6 +266,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--cache", default=DEFAULTS["cache"])
     parser.add_argument("--cache-ttl", type=int, default=24 * 3600,
                         help="Seconds a cached response stays fresh (default 86400, -1 = forever).")
+    parser.add_argument("--proxy", default=None,
+                        help="Proxy URL, e.g. http://127.0.0.1:7890 or http://user:pass@host:port.")
     parser.add_argument("--api-key", default=None, help="YouTube Data API key (or env YOUTUBE_API_KEY).")
     parser.add_argument("-v", "--verbose", action="store_true")
 
@@ -221,6 +300,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_verify = sub.add_parser("verify", help="List hand-entered figures and their staleness.")
     p_verify.set_defaults(func=cmd_verify, offline=True)
+
+    p_doctor = sub.add_parser("doctor", help="Check Python, proxy and which sites are reachable.")
+    p_doctor.set_defaults(func=cmd_doctor, offline=False)
 
     p_self = sub.add_parser("selftest", help="Run the whole analysis on the offline fixture.")
     p_self.set_defaults(func=cmd_selftest, offline=True)
