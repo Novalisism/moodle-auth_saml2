@@ -38,12 +38,37 @@ def _catalog_path(args) -> str:
     return args.catalog
 
 
+def _resolve_proxy(args) -> Optional[str]:
+    """Work out the proxy URL, injecting credentials without ever putting the
+    password on the command line (shell history, `ps`, and screen shares all
+    leak it there)."""
+    import getpass
+    import urllib.parse
+    import urllib.request
+
+    base = args.proxy or os.environ.get("HTTPS_PROXY") or ""
+    if not base:
+        detected = urllib.request.getproxies()
+        base = detected.get("https") or detected.get("http") or ""
+    user = getattr(args, "proxy_user", None)
+    if not user or not base:
+        return base or None
+    if "@" in base.split("//", 1)[-1]:
+        return base  # credentials already present
+    password = os.environ.get("PROXY_PASSWORD")
+    if password is None:
+        password = getpass.getpass(f"代理密码 / proxy password for {user} (输入时不显示): ")
+    scheme, _, rest = base.partition("://")
+    quote = lambda v: urllib.parse.quote(v, safe="")
+    return f"{scheme}://{quote(user)}:{quote(password)}@{rest}"
+
+
 def _http(args) -> Http:
     return Http(
         cache_dir=args.cache,
         ttl_seconds=args.cache_ttl,
         offline=getattr(args, "offline", False),
-        proxy=getattr(args, "proxy", None) or os.environ.get("HTTPS_PROXY") or None,
+        proxy=_resolve_proxy(args),
         stats=FetchStats(),
     )
 
@@ -203,14 +228,16 @@ def cmd_doctor(args) -> int:
         k: v for k, v in urllib.request.getproxies().items()
         if k in ("http", "https", "ftp", "all", "no")
     }
-    chosen = args.proxy or os.environ.get("HTTPS_PROXY") or detected.get("https") or detected.get("http")
+    chosen = _resolve_proxy(args)
     if detected:
         for scheme, value in sorted(detected.items()):
             shown = value if len(value) < 90 else value[:87] + "..."
             print(f"  系统检测到 / detected {scheme}: {shown}")
     else:
         print("  系统未设置代理 / no system proxy detected")
-    print(f"  本次使用 / using: {chosen or '不走代理 (direct)'}")
+    import re as _re
+    safe_chosen = _re.sub(r"://[^/@]*:[^/@]*@", "://***:***@", chosen) if chosen else None
+    print(f"  本次使用 / using: {safe_chosen or '不走代理 (direct)'}")
 
     print("\n== 连通性 / reachability ==")
     key = args.api_key or os.environ.get("YOUTUBE_API_KEY", "")
@@ -241,7 +268,7 @@ def cmd_doctor(args) -> int:
         print("  Your network forces an authenticating proxy. Pick one:")
         print("   1) 如果你在用梯子/代理软件（Clash、V2Ray 等）：在软件里找到 HTTP 端口（常见 7890），然后")
         print("      $env:HTTPS_PROXY=\"http://127.0.0.1:7890\"   再重跑")
-        print("   2) 如果是公司代理：python run.py all --proxy http://用户名:密码@代理地址:端口")
+        print("   2) 如果是公司代理：python run.py doctor --proxy-user 你的公司账号  (会提示你输密码，不显示)")
         print("   3) 如果这些网站本来就能直接打开：关掉系统代理后重跑")
     elif not failures:
         print("  全部通过，可以直接跑 python run.py all")
@@ -266,6 +293,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--cache", default=DEFAULTS["cache"])
     parser.add_argument("--cache-ttl", type=int, default=24 * 3600,
                         help="Seconds a cached response stays fresh (default 86400, -1 = forever).")
+    parser.add_argument("--proxy-user", default=None,
+                        help="Proxy username; the password is prompted for (never typed on the "
+                             "command line) or read from the PROXY_PASSWORD env var.")
     parser.add_argument("--proxy", default=None,
                         help="Proxy URL, e.g. http://127.0.0.1:7890 or http://user:pass@host:port.")
     parser.add_argument("--api-key", default=None, help="YouTube Data API key (or env YOUTUBE_API_KEY).")

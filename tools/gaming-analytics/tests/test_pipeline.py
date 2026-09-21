@@ -236,6 +236,38 @@ class TestProxyHandling(unittest.TestCase):
             ))
 
 
+class TestProxyCredentials(unittest.TestCase):
+    def _args(self, **kw):
+        import types
+        base = {"proxy": "http://webproxy.example.co:8890", "proxy_user": None}
+        base.update(kw)
+        return types.SimpleNamespace(**base)
+
+    def setUp(self):
+        from gaming_analytics.cli import _resolve_proxy
+        self.resolve = _resolve_proxy
+        self._saved = os.environ.get("PROXY_PASSWORD")
+        os.environ["PROXY_PASSWORD"] = "p@ss:word/1"
+
+    def tearDown(self):
+        if self._saved is None:
+            os.environ.pop("PROXY_PASSWORD", None)
+        else:
+            os.environ["PROXY_PASSWORD"] = self._saved
+
+    def test_special_characters_are_url_encoded(self):
+        """An unencoded : or @ in a password silently corrupts the proxy URL."""
+        url = self.resolve(self._args(proxy_user="zhang.san"))
+        self.assertEqual(url, "http://zhang.san:p%40ss%3Aword%2F1@webproxy.example.co:8890")
+
+    def test_existing_credentials_are_left_alone(self):
+        url = self.resolve(self._args(proxy="http://a:b@host:8890", proxy_user="zhang.san"))
+        self.assertEqual(url, "http://a:b@host:8890")
+
+    def test_no_user_means_no_credentials(self):
+        self.assertEqual(self.resolve(self._args()), "http://webproxy.example.co:8890")
+
+
 class TestEndToEnd(unittest.TestCase):
     def test_fixture_runs_through_analyse_and_render(self):
         raw = pipeline.load_json(os.path.join(HERE, "fixtures", "raw_sample.json"))

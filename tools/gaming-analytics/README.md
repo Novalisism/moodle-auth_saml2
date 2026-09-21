@@ -79,7 +79,8 @@ python run.py all
 | 现象 | 原因 / 处理 |
 |---|---|
 | `python` 不是内部或外部命令 | 安装时没勾 `Add python.exe to PATH`，重装 |
-| 满屏 `407 Proxy Authentication Required` | 你的网络要经过需要账号密码的代理。先跑 `python run.py doctor` 看用的是哪个代理，再按它给的三种解法选一种（本地代理软件端口 / 带账号密码的 `--proxy` / 关掉系统代理） |
+| 满屏 `407 Proxy Authentication Required` | 你的网络要经过需要账号密码的代理。先跑 `python run.py doctor` 看用的是哪个代理，再按它给的三种解法选一种 |
+| 公司代理要账号密码 | `python run.py all --proxy-user 你的公司账号` —— 会提示输密码，输入时不显示，也不会留在命令历史里。若仍报 407，多半是 NTLM/Kerberos 域认证，Python 的基础认证搞不定，需要找 IT 开白名单 |
 | 想先确认环境有没有问题 | `python run.py doctor` —— 一条命令看 Python、代理、五个数据源分别通不通 |
 | 卡在 Wikipedia 或 Steam 很久 | 网络连不上这两个站，改用 `python run.py all --no-wikipedia --no-steam` |
 | 提示 quota / 配额用尽 | 当天 10,000 点用完了，太平洋时间午夜自动重置；或加 `--no-search` 只花 24 点 |
