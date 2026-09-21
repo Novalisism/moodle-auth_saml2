@@ -250,9 +250,16 @@ def _manual_for(manual_rows, ip_id: str, metric: str, allow_unverified: bool):
     return None
 
 
-def analyse(raw: Dict[str, Any], model: Dict[str, Any], allow_unverified: bool = True) -> Dict[str, Any]:
+def analyse(
+    raw: Dict[str, Any],
+    model: Dict[str, Any],
+    allow_unverified: bool = True,
+    manual: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """`manual` overrides the figures snapshotted into raw.json at collect time,
+    so a corrected source can be re-reported without spending API quota again."""
     estimator = PlayerScaleEstimator(model)
-    manual_rows = raw.get("manual_figures", [])
+    manual_rows = (manual or {}).get("figures") or raw.get("manual_figures", [])
     catalog = raw["catalog"]
 
     ip_rows: List[Dict[str, Any]] = []

@@ -109,9 +109,31 @@ class PlayerScaleEstimator:
         return table.get(game_type, table["live_service"])
 
     # ------------------------------------------------------------- methods
+    # How much the source itself can be trusted, before staleness is considered.
+    SOURCE_GRADE = {
+        "official_disclosure": "high",
+        "press_report": "medium",
+        "third_party_estimate": "low",
+    }
+
     def from_official_mau(self, ip: Dict[str, Any], figure: Dict[str, Any]) -> Estimate:
         mid = float(figure["value"])
         low, high = self._apply_band(mid, "official_mau", figure.get("as_of"))
+        penalty = self._freshness_penalty(figure.get("as_of"))
+        grade = self.SOURCE_GRADE.get(figure.get("confidence"), "low")
+        notes = ["Disclosed MAU used as-is; the band covers staleness, not method error."]
+        if penalty > 1.3:
+            # A two-year-old official number is not an A-grade current figure.
+            grade = {"high": "medium", "medium": "low"}.get(grade, "low")
+            notes.append(
+                f"Downgraded for age: the figure is from {figure.get('as_of')}, "
+                "so it describes the past, not today."
+            )
+        if grade == "low" and figure.get("confidence") == "third_party_estimate":
+            notes.append(
+                "Third-party panel estimate, not a publisher figure - publish it as an "
+                "estimate with the panel named, never as the company's own number."
+            )
         return Estimate(
             ip_id=ip["id"],
             method="official_mau",
@@ -128,8 +150,8 @@ class PlayerScaleEstimator:
                 }
             ],
             as_of=figure.get("as_of"),
-            confidence="high" if figure.get("confidence") == "official_disclosure" else "medium",
-            notes=["Publisher-disclosed MAU used as-is; band only covers staleness."],
+            confidence=grade,
+            notes=notes,
         )
 
     def from_steam_ccu(self, ip: Dict[str, Any], ccu_record: Dict[str, Any]) -> Estimate:

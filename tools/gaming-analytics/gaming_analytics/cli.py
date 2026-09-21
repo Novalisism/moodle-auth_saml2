@@ -136,7 +136,10 @@ def cmd_report(args) -> int:
         return 2
     raw = pipeline.load_json(raw_path)
     model = pipeline.load_json(args.model)
-    analysis = pipeline.analyse(raw, model, allow_unverified=not args.verified_only)
+    manual = pipeline.load_json(args.manual) if os.path.exists(args.manual) else None
+    analysis = pipeline.analyse(
+        raw, model, allow_unverified=not args.verified_only, manual=manual
+    )
     pipeline.dump_json(os.path.join(args.out, "analysis.json"), analysis)
     markdown = render_markdown(analysis)
     md_path = os.path.join(args.out, "report.md")

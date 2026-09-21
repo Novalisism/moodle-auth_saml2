@@ -1,113 +1,160 @@
 {
   "schema_version": 1,
-  "_comment": "Figures that NO public API exposes (publisher-announced units / MAU / registered accounts). Every row is a seed: `run.py verify` prints them and each one must be re-checked at source_url before the number is published. value=null means 'no trustworthy figure seeded yet - go get it'. Nothing in this file is inferred by the pipeline; the estimator only consumes rows with verified=true unless --allow-unverified is passed.",
+  "_comment": "Figures no public API exposes. Filled 2026-09-21 from public reporting; `sourced_by` records how. Every row is still verified=false: that flag means a human opened source_url and confirmed the number AND its date. `confidence` grades the source itself: official_disclosure (publisher/IR), press_report (trade press quoting one), third_party_estimate (panel/tracker - label it as an estimate wherever it is published).",
   "figures": [
     {
       "ip": "minecraft",
       "metric": "units_sold",
-      "value": 300000000,
-      "as_of": "2023-10",
-      "source_name": "Mojang / Microsoft (Minecraft Live)",
-      "source_url": "https://www.minecraft.net/en-us/article/minecraft-live-2023",
-      "confidence": "official_disclosure",
-      "verified": false
+      "value": 350000000,
+      "as_of": "2025-04",
+      "source_name": "Mojang, via Minecraft Annual 2026 (trade press coverage)",
+      "source_url": "https://www.vgchartz.com/article/466157/minecraft-sales-top-350-million-units/",
+      "confidence": "press_report",
+      "verified": false,
+      "sourced_by": "web_search_2026-09-21",
+      "note": "Was 300M at Minecraft Live Oct 2023; +50M in 18 months. Still the best-selling game ever."
     },
     {
       "ip": "minecraft",
       "metric": "mau",
       "value": 170000000,
       "as_of": "2021-10",
-      "source_name": "Xbox Wire",
+      "source_name": "Xbox Wire (Minecraft Live 2021)",
       "source_url": "https://news.xbox.com/en-us/2021/10/16/minecraft-live-2021/",
       "confidence": "official_disclosure",
       "verified": false,
-      "note": "Stale by design - shows how the freshness penalty works. Replace with the newest Microsoft/Mojang disclosure."
+      "note": "Five years stale - Microsoft has not refreshed it. The estimator widens the band accordingly; do not quote it as a current figure."
     },
     {
       "ip": "gta",
       "metric": "units_sold",
-      "value": 200000000,
-      "as_of": "2024-02",
-      "source_name": "Take-Two Interactive quarterly results (press coverage)",
-      "source_url": "https://ir.take2games.com/financial-information/quarterly-results",
+      "value": 230000000,
+      "as_of": "2026-03-31",
+      "source_name": "Take-Two Interactive quarterly results",
+      "source_url": "https://www.gamedeveloper.com/business/gta-v-surpasses-230-million-sales-months-before-gta-vi-touches-down",
       "confidence": "press_report",
       "verified": false,
-      "note": "Take-Two restates shipped units every quarter - always pull the newest 10-Q."
+      "sourced_by": "web_search_2026-09-21",
+      "note": "Sold-in (shipped), not sold-through. The GTA series total is ~470M; this row is GTA V only."
     },
     {
       "ip": "zelda",
       "metric": "units_sold",
-      "value": null,
-      "as_of": null,
-      "source_name": "Nintendo IR - Top Selling Title Sales Units",
+      "value": 56040000,
+      "as_of": "2025-12-31",
+      "source_name": "Nintendo IR, Top Selling Title Sales Units",
       "source_url": "https://www.nintendo.co.jp/ir/en/finance/software/index.html",
       "confidence": "official_disclosure",
       "verified": false,
-      "note": "Nintendo publishes per-title units quarterly; decide whether the row is BotW only, TotK only, or the franchise sum, and say so in the report."
+      "sourced_by": "web_search_2026-09-21",
+      "note": "Breath of the Wild 33.64M + Tears of the Kingdom 22.40M. Deliberately NOT the whole franchise - older Zelda titles are excluded, so this is a floor for the IP."
     },
     {
       "ip": "soulsborne",
       "metric": "units_sold",
-      "value": null,
-      "as_of": null,
-      "source_name": "Bandai Namco / FromSoftware IR",
-      "source_url": "https://www.bandainamco.co.jp/en/ir/",
+      "value": 30000000,
+      "as_of": "2025-04",
+      "source_name": "Bandai Namco / FromSoftware",
+      "source_url": "https://gameinformer.com/2025/04/28/elden-ring-celebrates-30-million-copies-shipped",
       "confidence": "official_disclosure",
       "verified": false,
-      "note": "Elden Ring units are announced by press release; Dark Souls series units come from Bandai Namco IR decks."
+      "sourced_by": "web_search_2026-09-21",
+      "note": "Elden Ring base game only. Excludes Shadow of the Erdtree (10M+, Jul 2025), Nightreign (5M+) and the whole Dark Souls series - so the Souls-like row is a floor, not a franchise total."
     },
     {
       "ip": "the_last_of_us",
       "metric": "units_sold",
-      "value": null,
-      "as_of": null,
+      "value": 37000000,
+      "as_of": "2022-12",
       "source_name": "Sony Interactive Entertainment / Naughty Dog",
-      "source_url": "https://www.sie.com/en/corporate/release.html",
+      "source_url": "https://www.gamedeveloper.com/business/the-last-of-us-franchise-has-sold-37-million-copies-in-9-years",
       "confidence": "official_disclosure",
-      "verified": false
+      "verified": false,
+      "sourced_by": "web_search_2026-09-21",
+      "note": "Franchise-wide, and nearly four years old - Sony has not refreshed it. Later coverage suggests 40M+ but without a dated first-party statement."
+    },
+    {
+      "ip": "fortnite",
+      "metric": "mau",
+      "value": 110000000,
+      "as_of": "2026-03",
+      "source_name": "Business of Apps (aggregated third-party estimate)",
+      "source_url": "https://www.businessofapps.com/data/fortnite-statistics/",
+      "confidence": "third_party_estimate",
+      "verified": false,
+      "sourced_by": "web_search_2026-09-21",
+      "note": "Estimates cluster at 110-120M MAU for 2026. Epic does not publish MAU."
     },
     {
       "ip": "fortnite",
       "metric": "registered_users",
-      "value": null,
-      "as_of": null,
-      "source_name": "Epic Games",
-      "source_url": "https://www.epicgames.com/site/en-US/news",
-      "confidence": "official_disclosure",
+      "value": 650000000,
+      "as_of": "2025",
+      "source_name": "Epic Games (registered accounts)",
+      "source_url": "https://www.businessofapps.com/data/fortnite-statistics/",
+      "confidence": "press_report",
       "verified": false,
-      "note": "Registered accounts are NOT players. The estimator converts them with registered_to_mau (see config/model.json) and the report must label the row as account-derived."
+      "sourced_by": "web_search_2026-09-21",
+      "note": "Accounts, not players. Kept only as a cross-check against the MAU row above."
     },
     {
       "ip": "league_of_legends",
       "metric": "mau",
-      "value": null,
-      "as_of": null,
-      "source_name": "Riot Games (no regular disclosure)",
-      "source_url": "https://www.riotgames.com/en/news",
+      "value": 127000000,
+      "as_of": "2026-07",
+      "source_name": "Third-party estimates (Riot stopped disclosing after 2016)",
+      "source_url": "https://www.demandsage.com/league-of-legends-players-count/",
       "confidence": "third_party_estimate",
       "verified": false,
-      "note": "Riot stopped publishing MAU. Any number here is a third-party estimate and must be labelled as such."
-    },
-    {
-      "ip": "genshin_impact",
-      "metric": "mau",
-      "value": null,
-      "as_of": null,
-      "source_name": "Sensor Tower / AppMagic (paid) - HoYoverse does not disclose",
-      "source_url": "https://sensortower.com/",
-      "confidence": "third_party_estimate",
-      "verified": false
+      "sourced_by": "web_search_2026-09-21",
+      "note": "Midpoint of a 120-135M range. Riot's last official figure was 100M MAU in 2016. Any LoL number published today is an estimate and must say so."
     },
     {
       "ip": "valorant",
       "metric": "mau",
-      "value": null,
-      "as_of": null,
-      "source_name": "Riot Games",
-      "source_url": "https://www.riotgames.com/en/news",
+      "value": 35000000,
+      "as_of": "2024-10",
+      "source_name": "Riot Games (Anna Donlon, studio head)",
+      "source_url": "https://www.ghostcap.com/valorant-player-count",
       "confidence": "official_disclosure",
       "verified": false,
-      "note": "Riot has disclosed VALORANT MAU in occasional anniversary posts - use the dated post, not aggregator blogs."
+      "sourced_by": "web_search_2026-09-21",
+      "note": "Last official figure, two years old. 2026 tracker estimates range wildly (9M-50M) depending on whether they count ranked accounts or all sessions - which is why the official stale number is preferred here and its band widened."
+    },
+    {
+      "ip": "genshin_impact",
+      "metric": "mau",
+      "value": 18000000,
+      "as_of": "2026-04",
+      "source_name": "Third-party panel estimates (HoYoverse does not disclose)",
+      "source_url": "https://www.businessofapps.com/data/genshin-impact-statistics/",
+      "confidence": "third_party_estimate",
+      "verified": false,
+      "sourced_by": "web_search_2026-09-21",
+      "note": "16-21M MAU across all platforms in 2026, ~3.8M DAU. Peaked at 21M in Feb 2026. NOTE: an order of magnitude below the 250-350M the old category table assumed for Anime."
+    },
+    {
+      "ip": "pubg",
+      "metric": "mau",
+      "value": 146000000,
+      "as_of": "2026",
+      "source_name": "Third-party estimate, PUBG MOBILE only",
+      "source_url": "https://www.blog.udonis.co/mobile-marketing/mobile-games/pubg-mobile-player-count",
+      "confidence": "third_party_estimate",
+      "verified": false,
+      "sourced_by": "web_search_2026-09-21",
+      "note": "MOBILE ONLY. The PC/console build runs ~200-680K concurrents on Steam, a rounding error against this. If the IP row is meant to be PC-only, delete this figure - it will otherwise make PUBG look like a top-3 IP on a mobile number."
+    },
+    {
+      "ip": "call_of_duty",
+      "metric": "mau",
+      "value": null,
+      "as_of": null,
+      "source_name": "Activision Blizzard (no MAU disclosure since the Microsoft acquisition)",
+      "source_url": "https://www.thegamer.com/call-of-duty-black-ops-7-historic-low-peak-player-count-steam/",
+      "confidence": "official_disclosure",
+      "verified": false,
+      "note": "No usable number. Steam is a minor platform for CoD (Apr 2026 peak ~57K) and Black Ops 7 sold only 401K Steam copies in 26 days, down 82% on Black Ops 6 - so Steam-derived figures would badly misrepresent a console-first franchise. Needs Circana or Microsoft disclosure."
     }
   ]
 }

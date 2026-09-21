@@ -85,6 +85,22 @@ class TestEstimator(unittest.TestCase):
         self.assertEqual(fresh.mau_mid, stale.mau_mid)
         self.assertGreater(stale.mau_high - stale.mau_low, fresh.mau_high - fresh.mau_low)
 
+    def test_source_quality_sets_the_grade(self):
+        """A panel estimate and a publisher disclosure must not read alike."""
+        official = self.est.from_official_mau(
+            self.ip, {"value": 1e8, "as_of": "2026-08", "confidence": "official_disclosure"})
+        panel = self.est.from_official_mau(
+            self.ip, {"value": 1e8, "as_of": "2026-08", "confidence": "third_party_estimate"})
+        self.assertEqual(official.confidence, "high")
+        self.assertEqual(panel.confidence, "low")
+        self.assertTrue(any("panel estimate" in n for n in panel.notes))
+
+    def test_stale_official_figure_is_downgraded_not_just_widened(self):
+        stale = self.est.from_official_mau(
+            self.ip, {"value": 1e8, "as_of": "2024-10", "confidence": "official_disclosure"})
+        self.assertEqual(stale.confidence, "medium")
+        self.assertTrue(any("Downgraded for age" in n for n in stale.notes))
+
     def test_single_player_converts_units_far_more_conservatively(self):
         sp = self.est.from_units_sold(
             {**self.ip, "game_type": "single_player"}, {"value": 1e8, "as_of": "2026-06"}
