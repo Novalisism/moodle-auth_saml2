@@ -55,7 +55,7 @@ def _youtube(http: Http, args) -> Optional[YouTube]:
             "Continuing without any YouTube data."
         )
         return None
-    return YouTube(http, key)
+    return YouTube(http, key, allow_search_fallback=not getattr(args, "no_search", False))
 
 
 # ---------------------------------------------------------------- commands

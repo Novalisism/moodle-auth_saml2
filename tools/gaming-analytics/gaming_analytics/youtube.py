@@ -35,7 +35,7 @@ def _int(value: Any) -> Optional[int]:
 
 
 class YouTube:
-    def __init__(self, http: Http, api_key: str):
+    def __init__(self, http: Http, api_key: str, allow_search_fallback: bool = True):
         if not api_key:
             raise ValueError(
                 "YouTube API key missing. Create one at "
@@ -44,6 +44,10 @@ class YouTube:
             )
         self.http = http
         self.key = api_key
+        # An unresolved handle falls back to search.list, which costs 100x a
+        # channels.list call. Callers that asked to skip search must not have
+        # that cost sneak in through the back door.
+        self.allow_search_fallback = allow_search_fallback
 
     def _get(self, path: str, params: Dict[str, Any], cost: int) -> Dict[str, Any]:
         params = dict(params)
@@ -69,7 +73,13 @@ class YouTube:
         )
         items = data.get("items") or []
         if not items:
-            log.warning("handle %s did not resolve; falling back to search", handle)
+            if not self.allow_search_fallback:
+                log.warning(
+                    "handle %s did not resolve and search fallback is off (100 quota "
+                    "units) - set youtube.official_channel_id in the catalog, or rerun "
+                    "`resolve` without --no-search", handle)
+                return None
+            log.warning("handle %s did not resolve; falling back to search (100 units)", handle)
             return self.search_channel(handle.lstrip("@"))
         return self._channel_record(items[0])
 

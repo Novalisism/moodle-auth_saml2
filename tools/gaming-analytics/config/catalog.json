@@ -10,8 +10,9 @@
       "creator_channels": [
         {
           "handle": "@MrBeastGaming",
-          "channel_id": null,
-          "url": "https://www.youtube.com/@MrBeastGaming"
+          "channel_id": "UCIPPMRA040LQr5QPyJEbmXA",
+          "url": "https://www.youtube.com/@MrBeastGaming",
+          "title": "MrBeast Gaming"
         }
       ],
       "ips": [
@@ -35,12 +36,13 @@
           "sales_key": "Minecraft",
           "youtube": {
             "official_handle": "@minecraft",
-            "official_channel_id": null,
+            "official_channel_id": "UC1sELGmy5jp5fQUugmuYlXQ",
             "search_queries": [
               "minecraft",
               "minecraft gameplay",
               "我的世界"
-            ]
+            ],
+            "official_channel_title": "Minecraft"
           }
         }
       ]
@@ -53,8 +55,9 @@
       "creator_channels": [
         {
           "handle": "@Anomaly",
-          "channel_id": null,
-          "url": "https://www.youtube.com/anomaly"
+          "channel_id": "UCcqsx0NjdN3Ng9Nd8VSOlXg",
+          "url": "https://www.youtube.com/anomaly",
+          "title": "Anomaly"
         }
       ],
       "ips": [
@@ -74,13 +77,14 @@
           "steam_appid": 730,
           "sales_key": null,
           "youtube": {
-            "official_handle": "@CounterStrike",
+            "official_handle": null,
             "official_channel_id": null,
             "search_queries": [
               "counter strike 2",
               "cs2 gameplay",
               "csgo"
-            ]
+            ],
+            "channel_note": "Valve runs no CS-specific channel; @valve mixes CS, Dota and Half-Life, so attributing it here would double-count against Dota 2. Reported as a gap instead."
           },
           "steam_note": "CS2 is free-to-play; there is no units figure to rank on."
         },
@@ -101,12 +105,13 @@
           "sales_key": null,
           "youtube": {
             "official_handle": "@VALORANT",
-            "official_channel_id": null,
+            "official_channel_id": "UC8CX0LD98EDXl4UYX1MDCXg",
             "search_queries": [
               "valorant",
               "valorant gameplay",
               "无畏契约"
-            ]
+            ],
+            "official_channel_title": "VALORANT"
           }
         },
         {
@@ -129,12 +134,13 @@
           "sales_key": "Call of Duty: Modern Warfare II",
           "youtube": {
             "official_handle": "@CallofDuty",
-            "official_channel_id": null,
+            "official_channel_id": "UC9YydG57epLqxA9cTzZXSeQ",
             "search_queries": [
               "call of duty",
               "warzone gameplay",
               "使命召唤"
-            ]
+            ],
+            "official_channel_title": "Call of Duty"
           }
         },
         {
@@ -155,12 +161,13 @@
           "sales_key": null,
           "youtube": {
             "official_handle": "@Fortnite",
-            "official_channel_id": null,
+            "official_channel_id": "UClG8odDC8TS6Zpqk9CGVQiQ",
             "search_queries": [
               "fortnite",
               "fortnite gameplay",
               "堡垒之夜"
-            ]
+            ],
+            "official_channel_title": "Fortnite"
           }
         },
         {
@@ -180,12 +187,13 @@
           "sales_key": null,
           "youtube": {
             "official_handle": "@PlayOverwatch",
-            "official_channel_id": null,
+            "official_channel_id": "UClOf1XXinvZsy4wKPAkro2A",
             "search_queries": [
               "overwatch 2",
               "overwatch gameplay",
               "守望先锋"
-            ]
+            ],
+            "official_channel_title": "PlayOverwatch"
           }
         },
         {
@@ -205,12 +213,13 @@
           "sales_key": null,
           "youtube": {
             "official_handle": "@PlayApex",
-            "official_channel_id": null,
+            "official_channel_id": "UC0ZV6M2THA81QT9hrVWJG3A",
             "search_queries": [
               "apex legends",
               "apex legends gameplay",
               "apex英雄"
-            ]
+            ],
+            "official_channel_title": "Apex Legends"
           }
         },
         {
@@ -231,12 +240,13 @@
           "sales_key": "PUBG: Battlegrounds",
           "youtube": {
             "official_handle": "@PUBG",
-            "official_channel_id": null,
+            "official_channel_id": "UCnXDQbqIdp-HQuDyM4p12ng",
             "search_queries": [
               "pubg",
               "pubg gameplay",
               "绝地求生"
-            ]
+            ],
+            "official_channel_title": "PUBG: BATTLEGROUNDS"
           }
         }
       ]
@@ -249,18 +259,21 @@
       "creator_channels": [
         {
           "handle": "@TheDaniRep",
-          "channel_id": null,
-          "url": "https://www.youtube.com/@TheDaniRep"
+          "channel_id": "UCHIwQiZhIn6fm5b_IilqBbQ",
+          "url": "https://www.youtube.com/@TheDaniRep",
+          "title": "DaniRep | +6 Vídeos Diarios De GTA 5 Online!"
         },
         {
           "handle": "@Jelly",
-          "channel_id": null,
-          "url": "https://www.youtube.com/@Jelly"
+          "channel_id": "UC0DZmkupLYwc0yDsfocLh0A",
+          "url": "https://www.youtube.com/@Jelly",
+          "title": "Jelly"
         },
         {
           "handle": "@VanossGaming",
-          "channel_id": null,
-          "url": "https://www.youtube.com/@VanossGaming"
+          "channel_id": "UCKqH_9mk1waLgBiL2vT5b9g",
+          "url": "https://www.youtube.com/@VanossGaming",
+          "title": "VanossGaming"
         }
       ],
       "ips": [
@@ -283,12 +296,13 @@
           "sales_key": "Grand Theft Auto V",
           "youtube": {
             "official_handle": "@RockstarGames",
-            "official_channel_id": null,
+            "official_channel_id": "UC6VcWc1rAoWdBCM0JxrRQ3A",
             "search_queries": [
               "gta 5",
               "gta online",
               "侠盗猎车手5"
-            ]
+            ],
+            "official_channel_title": "Rockstar Games"
           }
         },
         {
@@ -310,12 +324,13 @@
           "sales_key": "The Legend of Zelda: Breath of the Wild",
           "youtube": {
             "official_handle": "@NintendoAmerica",
-            "official_channel_id": null,
+            "official_channel_id": "UCGIY_O-8vW4rfX98KlMkvRg",
             "search_queries": [
               "zelda tears of the kingdom",
               "breath of the wild",
               "塞尔达传说"
-            ]
+            ],
+            "official_channel_title": "Nintendo of America"
           }
         },
         {
@@ -340,8 +355,8 @@
           ],
           "sales_key": "Elden Ring",
           "youtube": {
-            "official_handle": "@BandaiNamcoEntertainmentAmerica",
-            "official_channel_id": null,
+            "official_handle": "@fromsoftwareinc",
+            "official_channel_id": "UCCkxMbfZ80VFwwiRlIG5P5g",
             "search_queries": [
               "elden ring",
               "dark souls",
@@ -366,8 +381,8 @@
           "steam_note": "Resolve `The Last of Us Part I` / `Part II Remastered` appids via `resolve`.",
           "sales_key": "The Last of Us",
           "youtube": {
-            "official_handle": "@Naughty_Dog",
-            "official_channel_id": null,
+            "official_handle": "@naughtydog",
+            "official_channel_id": "UCSoc4XAihwzAA7p29tpAu9A",
             "search_queries": [
               "the last of us game",
               "last of us part 2",
@@ -385,13 +400,15 @@
       "creator_channels": [
         {
           "handle": "@KyoStinV",
-          "channel_id": null,
-          "url": "https://www.youtube.com/@KyoStinV"
+          "channel_id": "UCWwuijyo4x78iXup5hOvkbw",
+          "url": "https://www.youtube.com/@KyoStinV",
+          "title": "KyoStinV"
         },
         {
           "handle": "@IWinToLose",
-          "channel_id": null,
-          "url": "https://www.youtube.com/@IWinToLose"
+          "channel_id": "UCHMnsOPDgrjWvjHXZp-xvqg",
+          "url": "https://www.youtube.com/@IWinToLose",
+          "title": "IWinToLose Gaming"
         }
       ],
       "ips": [
@@ -413,12 +430,13 @@
           "sales_key": null,
           "youtube": {
             "official_handle": "@GenshinImpact",
-            "official_channel_id": null,
+            "official_channel_id": "UCiS882YPwZt1NfaM0gR0D9Q",
             "search_queries": [
               "genshin impact",
               "原神",
               "genshin gameplay"
-            ]
+            ],
+            "official_channel_title": "Genshin Impact"
           }
         },
         {
@@ -438,12 +456,13 @@
           "sales_key": null,
           "youtube": {
             "official_handle": "@WutheringWaves",
-            "official_channel_id": null,
+            "official_channel_id": "UC0Bi5KMcECRVYis5Gb_ZYZQ",
             "search_queries": [
               "wuthering waves",
               "鸣潮",
               "wuthering waves gameplay"
-            ]
+            ],
+            "official_channel_title": "Wuthering Waves"
           }
         },
         {
@@ -461,8 +480,8 @@
           "steam_note": "Mobile only.",
           "sales_key": null,
           "youtube": {
-            "official_handle": "@ArknightsOfficial",
-            "official_channel_id": null,
+            "official_handle": "@arknightsofficialyostar",
+            "official_channel_id": "UCR0J2NYGuC8epsa1O4DMmXQ",
             "search_queries": [
               "arknights",
               "明日方舟",
@@ -488,11 +507,12 @@
           "sales_key": null,
           "youtube": {
             "official_handle": "@HonkaiStarRail",
-            "official_channel_id": null,
+            "official_channel_id": "UC2PeMPA8PAOp-bynLoCeMLA",
             "search_queries": [
               "honkai star rail",
               "崩坏星穹铁道"
-            ]
+            ],
+            "official_channel_title": "Honkai: Star Rail"
           }
         }
       ]
@@ -521,12 +541,13 @@
           "sales_key": null,
           "youtube": {
             "official_handle": "@LeagueOfLegends",
-            "official_channel_id": null,
+            "official_channel_id": "UC2t5bjwHdUX4vM2g8TRDq5g",
             "search_queries": [
               "league of legends",
               "lol gameplay",
               "英雄联盟"
-            ]
+            ],
+            "official_channel_title": "League of Legends"
           }
         },
         {
@@ -545,12 +566,13 @@
           "sales_key": null,
           "youtube": {
             "official_handle": "@dota2",
-            "official_channel_id": null,
+            "official_channel_id": "UCTQKT5QqO3h7y32G8VzuySQ",
             "search_queries": [
               "dota 2",
               "dota 2 gameplay",
               "刀塔2"
-            ]
+            ],
+            "official_channel_title": "dota2"
           }
         }
       ]
