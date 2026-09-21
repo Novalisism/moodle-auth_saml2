@@ -280,30 +280,49 @@ def cmd_doctor(args) -> int:
     return 0 if not failures else 1
 
 
+def _add_global_args(parser: argparse.ArgumentParser, suppress: bool = False) -> None:
+    """Global options, added to the top parser AND to every subparser.
+
+    argparse only accepts a top-level option before the subcommand, so
+    `run.py doctor --proxy-user me` would otherwise be rejected - which is
+    exactly how people type it. The subparser copies default to SUPPRESS so
+    that omitting them does not overwrite what the top-level parser already
+    parsed.
+    """
+    d = (lambda value: argparse.SUPPRESS) if suppress else (lambda value: value)
+    parser.add_argument("--catalog", default=d(DEFAULTS["catalog"]))
+    parser.add_argument("--model", default=d(DEFAULTS["model"]))
+    parser.add_argument("--manual", default=d(DEFAULTS["manual"]))
+    parser.add_argument("--out", default=d(DEFAULTS["out"]))
+    parser.add_argument("--cache", default=d(DEFAULTS["cache"]))
+    parser.add_argument("--cache-ttl", type=int, default=d(24 * 3600),
+                        help="Seconds a cached response stays fresh (default 86400, -1 = forever).")
+    parser.add_argument("--proxy-user", default=d(None),
+                        help="Proxy username; the password is prompted for (never typed on the "
+                             "command line) or read from the PROXY_PASSWORD env var.")
+    parser.add_argument("--proxy", default=d(None),
+                        help="Proxy URL, e.g. http://127.0.0.1:7890 or http://user:pass@host:port.")
+    parser.add_argument("--api-key", default=d(None),
+                        help="YouTube Data API key (or env YOUTUBE_API_KEY).")
+    parser.add_argument("-v", "--verbose", action="store_true",
+                        default=argparse.SUPPRESS if suppress else False)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="run.py",
         description="Collect Steam + YouTube data for gaming IPs and produce an "
                     "auditable player-scale / ranking report.",
     )
-    parser.add_argument("--catalog", default=DEFAULTS["catalog"])
-    parser.add_argument("--model", default=DEFAULTS["model"])
-    parser.add_argument("--manual", default=DEFAULTS["manual"])
-    parser.add_argument("--out", default=DEFAULTS["out"])
-    parser.add_argument("--cache", default=DEFAULTS["cache"])
-    parser.add_argument("--cache-ttl", type=int, default=24 * 3600,
-                        help="Seconds a cached response stays fresh (default 86400, -1 = forever).")
-    parser.add_argument("--proxy-user", default=None,
-                        help="Proxy username; the password is prompted for (never typed on the "
-                             "command line) or read from the PROXY_PASSWORD env var.")
-    parser.add_argument("--proxy", default=None,
-                        help="Proxy URL, e.g. http://127.0.0.1:7890 or http://user:pass@host:port.")
-    parser.add_argument("--api-key", default=None, help="YouTube Data API key (or env YOUTUBE_API_KEY).")
-    parser.add_argument("-v", "--verbose", action="store_true")
+    _add_global_args(parser)
+
+    common = argparse.ArgumentParser(add_help=False)
+    _add_global_args(common, suppress=True)
 
     sub = parser.add_subparsers(dest="command", required=True)
 
-    p_resolve = sub.add_parser("resolve", help="Fill missing Steam appids / YouTube channel ids.")
+    p_resolve = sub.add_parser("resolve", parents=[common],
+                               help="Fill missing Steam appids / YouTube channel ids.")
     p_resolve.add_argument("--no-steam", action="store_true")
     p_resolve.add_argument("--no-youtube", action="store_true")
     p_resolve.set_defaults(func=cmd_resolve, offline=False)
@@ -312,7 +331,7 @@ def build_parser() -> argparse.ArgumentParser:
         ("collect", cmd_collect, "Fetch everything into out/raw.json."),
         ("all", cmd_all, "collect + report."),
     ):
-        p = sub.add_parser(name, help=helptext)
+        p = sub.add_parser(name, parents=[common], help=helptext)
         p.add_argument("--no-search", action="store_true",
                        help="Skip search.list (saves 100 quota units per query).")
         p.add_argument("--no-steam", action="store_true")
@@ -323,18 +342,22 @@ def build_parser() -> argparse.ArgumentParser:
                        help="Ignore manual figures with verified=false.")
         p.set_defaults(func=func)
 
-    p_report = sub.add_parser("report", help="Build report.md + CSVs from out/raw.json.")
+    p_report = sub.add_parser("report", parents=[common],
+                              help="Build report.md + CSVs from out/raw.json.")
     p_report.add_argument("--raw", default=None)
     p_report.add_argument("--verified-only", action="store_true")
     p_report.set_defaults(func=cmd_report, offline=True)
 
-    p_verify = sub.add_parser("verify", help="List hand-entered figures and their staleness.")
+    p_verify = sub.add_parser("verify", parents=[common],
+                              help="List hand-entered figures and their staleness.")
     p_verify.set_defaults(func=cmd_verify, offline=True)
 
-    p_doctor = sub.add_parser("doctor", help="Check Python, proxy and which sites are reachable.")
+    p_doctor = sub.add_parser("doctor", parents=[common],
+                              help="Check Python, proxy and which sites are reachable.")
     p_doctor.set_defaults(func=cmd_doctor, offline=False)
 
-    p_self = sub.add_parser("selftest", help="Run the whole analysis on the offline fixture.")
+    p_self = sub.add_parser("selftest", parents=[common],
+                            help="Run the whole analysis on the offline fixture.")
     p_self.set_defaults(func=cmd_selftest, offline=True)
     return parser
 

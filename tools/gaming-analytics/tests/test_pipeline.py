@@ -268,6 +268,33 @@ class TestProxyCredentials(unittest.TestCase):
         self.assertEqual(self.resolve(self._args()), "http://webproxy.example.co:8890")
 
 
+class TestArgumentOrder(unittest.TestCase):
+    """`run.py doctor --proxy-user me` is how people actually type it."""
+
+    def setUp(self):
+        from gaming_analytics.cli import build_parser
+        self.parser = build_parser()
+
+    def test_global_flag_accepted_after_the_subcommand(self):
+        args = self.parser.parse_args(["doctor", "--proxy-user", "me", "--proxy", "http://p:1"])
+        self.assertEqual(args.proxy_user, "me")
+        self.assertEqual(args.proxy, "http://p:1")
+
+    def test_global_flag_accepted_before_the_subcommand(self):
+        args = self.parser.parse_args(["--proxy-user", "me", "doctor"])
+        self.assertEqual(args.proxy_user, "me")
+
+    def test_subparser_does_not_wipe_a_flag_given_before_it(self):
+        args = self.parser.parse_args(["--out", "/tmp/x", "report"])
+        self.assertEqual(args.out, "/tmp/x")
+
+    def test_defaults_survive_when_nothing_is_passed(self):
+        args = self.parser.parse_args(["selftest"])
+        self.assertTrue(args.model.endswith("model.json"))
+        self.assertIsNone(args.proxy_user)
+        self.assertFalse(args.verbose)
+
+
 class TestEndToEnd(unittest.TestCase):
     def test_fixture_runs_through_analyse_and_render(self):
         raw = pipeline.load_json(os.path.join(HERE, "fixtures", "raw_sample.json"))
