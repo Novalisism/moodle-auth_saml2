@@ -42,6 +42,52 @@ python3 run.py all
 
 ---
 
+## Windows 从零开始（非技术向）
+
+**只需要做一次的准备**
+
+1. 装 Python：打开 <https://www.python.org/downloads/> → 点黄色大按钮 `Download Python 3.x` → 运行下载的安装包
+   → ⚠️ **务必勾选最下面的 `Add python.exe to PATH`** → 点 `Install Now` → 等它跑完点 Close
+2. 把 `gaming-analytics.zip` 解压出来（右键 → 全部解压），记住解压后的文件夹位置，比如
+   `C:\Users\你的用户名\Downloads\gaming-analytics`
+3. 进到那个文件夹里（里面能看到 `run.py`），**按住 Shift 键 + 在空白处点右键** →
+   选 `在此处打开 PowerShell 窗口`（有的系统显示"在终端中打开"）
+4. 在弹出的黑窗口里输入下面这行，确认 Python 装好了：
+
+   ```powershell
+   python --version
+   ```
+
+   显示 `Python 3.x.x` 就对了。如果提示"不是内部或外部命令"，说明第 1 步的 PATH 没勾，重装一遍。
+
+**每次要出数据时**
+
+在同一个黑窗口里，依次粘贴这两行（第一行把 `你的密钥` 换成实际的 key）：
+
+```powershell
+$env:YOUTUBE_API_KEY="你的密钥"
+python run.py all
+```
+
+跑完会显示产出文件的位置。结果在 `out` 文件夹里：
+
+- `report.md` —— 完整报告，用记事本就能打开（想看排版效果可以拖进浏览器或用 VS Code）
+- `ips.csv` / `categories.csv` —— **双击用 Excel 打开**，可以直接贴回原表
+
+**常见状况**
+
+| 现象 | 原因 / 处理 |
+|---|---|
+| `python` 不是内部或外部命令 | 安装时没勾 `Add python.exe to PATH`，重装 |
+| 卡在 Wikipedia 或 Steam 很久 | 网络连不上这两个站，改用 `python run.py all --no-wikipedia --no-steam` |
+| 提示 quota / 配额用尽 | 当天 10,000 点用完了，太平洋时间午夜自动重置；或加 `--no-search` 只花 24 点 |
+| 想省额度先试试水 | `python run.py all --no-search`（跳过最贵的搜索，只拿频道数据） |
+
+> 完整跑一次 `all` 约消耗 5,500 点配额，一天的额度够跑 1 次多一点。改模型系数重新出报告
+> （`python run.py report`）不花任何配额。
+
+---
+
 ## 命令
 
 | 命令 | 作用 | 网络 | YouTube 配额 |
