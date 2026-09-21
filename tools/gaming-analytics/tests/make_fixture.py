@@ -1,0 +1,134 @@
+#!/usr/bin/env python3
+"""Generate tests/fixtures/raw_sample.json - a deterministic SYNTHETIC payload.
+
+The numbers are fabricated on purpose (seeded PRNG, round magnitudes) so that
+the offline selftest exercises every code path - Steam-only IPs, YouTube-only
+IPs, IPs with nothing, stale manual figures, method disagreement - without any
+risk of a fixture value being mistaken for research output.
+"""
+import datetime as dt
+import json
+import os
+import random
+import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+sys.path.insert(0, ROOT)
+
+from gaming_analytics.pipeline import iter_ips, load_json  # noqa: E402
+
+rng = random.Random(20260921)
+SCALE = {
+    "live_service": (80_000, 1_200_000),
+    "sandbox_live": (30_000, 400_000),
+    "gacha_live_service": (20_000, 200_000),
+    "premium_with_live_mode": (50_000, 500_000),
+    "single_player": (5_000, 120_000),
+}
+# IPs deliberately left without any signal, to prove the gaps section works.
+NO_SIGNAL = {"arknights", "the_last_of_us"}
+
+
+def main() -> int:
+    catalog = load_json(os.path.join(ROOT, "config", "catalog.json"))
+    manual = load_json(os.path.join(ROOT, "config", "manual_figures.json"))
+    ips, channels = {}, {}
+
+    for category, ip in iter_ips(catalog):
+        rec = {
+            "catalog": ip,
+            "category_id": category["id"],
+            "category_label": category["label"],
+            "errors": [],
+        }
+        if ip["id"] not in NO_SIGNAL:
+            if ip.get("steam_appid"):
+                lo, hi = SCALE.get(ip.get("game_type"), (10_000, 200_000))
+                ccu = rng.randrange(lo, hi)
+                rec["steam_ccu"] = {
+                    "appid": ip["steam_appid"],
+                    "concurrent_players": ccu,
+                    "source": "SYNTHETIC fixture (not Valve)",
+                    "source_url": "https://example.invalid/fixture",
+                }
+                owners = ccu * rng.randrange(400, 1200)
+                rec["steamspy"] = {
+                    "appid": ip["steam_appid"],
+                    "owners_low": owners,
+                    "owners_high": owners * 2,
+                    "owners_mid": int(owners * 1.5),
+                    "source": "SYNTHETIC fixture (not SteamSpy)",
+                    "source_url": "https://example.invalid/fixture",
+                }
+            views = rng.randrange(2, 90) * 10 ** rng.choice([8, 9, 10])
+            channel_id = "UC_FIXTURE_" + ip["id"][:12]
+            top = [
+                {
+                    "video_id": f"vid_{ip['id']}_{i}",
+                    "title": f"[fixture] {ip['name']} video {i}",
+                    "channel_id": channel_id if i == 0 else f"UC_creator_{i}",
+                    "channel_title": "Fixture creator",
+                    "published_at": "2025-01-01T00:00:00Z",
+                    "view_count": int(views / (i + 2)),
+                    "url": f"https://www.youtube.com/watch?v=vid_{ip['id']}_{i}",
+                }
+                for i in range(rng.randrange(3, 9))
+            ]
+            rec["youtube"] = {
+                "official_channel": {
+                    "channel_id": channel_id,
+                    "title": f"{ip['name']} (fixture channel)",
+                    "view_count": views,
+                    "subscriber_count": int(views / rng.randrange(200, 900)),
+                    "video_count": rng.randrange(200, 4000),
+                    "url": f"https://www.youtube.com/channel/{channel_id}",
+                },
+                "top_videos": sorted(top, key=lambda v: v["view_count"], reverse=True),
+                "queries": [{"query": q, "returned": 50, "new": 50}
+                            for q in (ip.get("youtube") or {}).get("search_queries", [])],
+            }
+        ips[ip["id"]] = rec
+
+    for category in catalog["categories"]:
+        for channel in category.get("creator_channels", []):
+            cid = "UC_FIXTURE_" + channel["handle"].strip("@")[:12]
+            views = rng.randrange(1, 60) * 10 ** 9
+            channels[cid] = {
+                "channel_id": cid,
+                "title": channel["handle"].strip("@") + " (fixture)",
+                "handle": channel["handle"],
+                "view_count": views,
+                "subscriber_count": int(views / rng.randrange(150, 600)),
+                "video_count": rng.randrange(300, 6000),
+                "country": "US",
+                "url": f"https://www.youtube.com/channel/{cid}",
+                "category_id": category["id"],
+            }
+
+    payload = {
+        "run": {
+            "fixture": True,
+            "started_at": dt.datetime(2026, 9, 21, tzinfo=dt.timezone.utc).isoformat(),
+            "finished_at": dt.datetime(2026, 9, 21, tzinfo=dt.timezone.utc).isoformat(),
+            "with_search": True,
+            "fetch_stats": {"requests": 0, "cache_hits": 0, "errors": 0, "youtube_quota_units": 0},
+            "note": "SYNTHETIC - generated by tests/make_fixture.py, safe to regenerate.",
+        },
+        "catalog": catalog,
+        "manual_figures": manual["figures"],
+        "ips": ips,
+        "creator_channels": channels,
+        "wikipedia_rows": 0,
+    }
+    out = os.path.join(HERE, "fixtures", "raw_sample.json")
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    with open(out, "w", encoding="utf-8") as fh:
+        json.dump(payload, fh, indent=2, ensure_ascii=False)
+        fh.write("\n")
+    print(f"wrote {out}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

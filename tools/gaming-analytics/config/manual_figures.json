@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "_comment": "Figures that NO public API exposes (publisher-announced units / MAU / registered accounts). Every row is a seed: `run.py verify` prints them and each one must be re-checked at source_url before the number is published. value=null means 'no trustworthy figure seeded yet - go get it'. Nothing in this file is inferred by the pipeline; the estimator only consumes rows with verified=true unless --allow-unverified is passed.",
+  "figures": [
+    {
+      "ip": "minecraft",
+      "metric": "units_sold",
+      "value": 300000000,
+      "as_of": "2023-10",
+      "source_name": "Mojang / Microsoft (Minecraft Live)",
+      "source_url": "https://www.minecraft.net/en-us/article/minecraft-live-2023",
+      "confidence": "official_disclosure",
+      "verified": false
+    },
+    {
+      "ip": "minecraft",
+      "metric": "mau",
+      "value": 170000000,
+      "as_of": "2021-10",
+      "source_name": "Xbox Wire",
+      "source_url": "https://news.xbox.com/en-us/2021/10/16/minecraft-live-2021/",
+      "confidence": "official_disclosure",
+      "verified": false,
+      "note": "Stale by design - shows how the freshness penalty works. Replace with the newest Microsoft/Mojang disclosure."
+    },
+    {
+      "ip": "gta",
+      "metric": "units_sold",
+      "value": 200000000,
+      "as_of": "2024-02",
+      "source_name": "Take-Two Interactive quarterly results (press coverage)",
+      "source_url": "https://ir.take2games.com/financial-information/quarterly-results",
+      "confidence": "press_report",
+      "verified": false,
+      "note": "Take-Two restates shipped units every quarter - always pull the newest 10-Q."
+    },
+    {
+      "ip": "zelda",
+      "metric": "units_sold",
+      "value": null,
+      "as_of": null,
+      "source_name": "Nintendo IR - Top Selling Title Sales Units",
+      "source_url": "https://www.nintendo.co.jp/ir/en/finance/software/index.html",
+      "confidence": "official_disclosure",
+      "verified": false,
+      "note": "Nintendo publishes per-title units quarterly; decide whether the row is BotW only, TotK only, or the franchise sum, and say so in the report."
+    },
+    {
+      "ip": "soulsborne",
+      "metric": "units_sold",
+      "value": null,
+      "as_of": null,
+      "source_name": "Bandai Namco / FromSoftware IR",
+      "source_url": "https://www.bandainamco.co.jp/en/ir/",
+      "confidence": "official_disclosure",
+      "verified": false,
+      "note": "Elden Ring units are announced by press release; Dark Souls series units come from Bandai Namco IR decks."
+    },
+    {
+      "ip": "the_last_of_us",
+      "metric": "units_sold",
+      "value": null,
+      "as_of": null,
+      "source_name": "Sony Interactive Entertainment / Naughty Dog",
+      "source_url": "https://www.sie.com/en/corporate/release.html",
+      "confidence": "official_disclosure",
+      "verified": false
+    },
+    {
+      "ip": "fortnite",
+      "metric": "registered_users",
+      "value": null,
+      "as_of": null,
+      "source_name": "Epic Games",
+      "source_url": "https://www.epicgames.com/site/en-US/news",
+      "confidence": "official_disclosure",
+      "verified": false,
+      "note": "Registered accounts are NOT players. The estimator converts them with registered_to_mau (see config/model.json) and the report must label the row as account-derived."
+    },
+    {
+      "ip": "league_of_legends",
+      "metric": "mau",
+      "value": null,
+      "as_of": null,
+      "source_name": "Riot Games (no regular disclosure)",
+      "source_url": "https://www.riotgames.com/en/news",
+      "confidence": "third_party_estimate",
+      "verified": false,
+      "note": "Riot stopped publishing MAU. Any number here is a third-party estimate and must be labelled as such."
+    },
+    {
+      "ip": "genshin_impact",
+      "metric": "mau",
+      "value": null,
+      "as_of": null,
+      "source_name": "Sensor Tower / AppMagic (paid) - HoYoverse does not disclose",
+      "source_url": "https://sensortower.com/",
+      "confidence": "third_party_estimate",
+      "verified": false
+    },
+    {
+      "ip": "valorant",
+      "metric": "mau",
+      "value": null,
+      "as_of": null,
+      "source_name": "Riot Games",
+      "source_url": "https://www.riotgames.com/en/news",
+      "confidence": "official_disclosure",
+      "verified": false,
+      "note": "Riot has disclosed VALORANT MAU in occasional anniversary posts - use the dated post, not aggregator blogs."
+    }
+  ]
+}

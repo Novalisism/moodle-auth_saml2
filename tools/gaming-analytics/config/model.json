@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "_comment": "Every constant the player-scale estimator uses. Nothing is hard-coded in the code; change a number here and rerun `run.py report` to see the effect. METHODOLOGY.md explains where each range comes from and how to challenge it.",
+  "ccu_to_dau": {
+    "value": 9.0,
+    "low": 6.0,
+    "high": 13.0,
+    "basis": "Steam peak-concurrent to daily-unique ratio observed in published Valve/Steam Charts breakdowns and studio postmortems. Session-heavy competitive titles sit low, casual/mobile-style titles sit high."
+  },
+  "dau_to_mau": {
+    "value": 3.2,
+    "low": 2.2,
+    "high": 4.5,
+    "basis": "Inverse of typical DAU/MAU stickiness for games: 45% stickiness -> 2.2x, 22% -> 4.5x. Live-service shooters/MOBAs are stickier than gacha or single-player."
+  },
+  "steam_share_of_pc": {
+    "value": 0.75,
+    "low": 0.6,
+    "high": 0.9,
+    "basis": "Share of a Western PC title's players that are on Steam rather than Epic/EA app/Battle.net/standalone. Only applied when a title ships on Steam AND elsewhere."
+  },
+  "platform_multipliers": {
+    "_comment": "Applied to a PC-only signal (Steam CCU/owners) to reach the whole-IP audience. pc=1 by definition.",
+    "pc": 1.0,
+    "console": 1.6,
+    "mobile": 3.0,
+    "cap": 6.0
+  },
+  "lifetime_to_mau": {
+    "_comment": "Share of lifetime buyers/owners still playing in a given month, by game type. The single biggest lever in the whole model - this is where an 'estimate' really comes from.",
+    "live_service": {"value": 0.14, "low": 0.08, "high": 0.22},
+    "sandbox_live": {"value": 0.30, "low": 0.20, "high": 0.45},
+    "gacha_live_service": {"value": 0.18, "low": 0.10, "high": 0.28},
+    "premium_with_live_mode": {"value": 0.10, "low": 0.05, "high": 0.18},
+    "single_player": {"value": 0.035, "low": 0.015, "high": 0.07}
+  },
+  "registered_to_mau": {
+    "value": 0.08,
+    "low": 0.04,
+    "high": 0.15,
+    "basis": "Registered accounts accumulate forever and include duplicates/bots. Treat as the weakest signal available."
+  },
+  "freshness": {
+    "_comment": "Confidence penalty for stale manual figures, applied to the half-width of the output range.",
+    "full_confidence_days": 180,
+    "penalty_per_year": 0.35,
+    "max_penalty": 1.2
+  },
+  "method_priority": [
+    "official_mau",
+    "steam_ccu",
+    "steam_owners",
+    "units_sold",
+    "registered_users"
+  ],
+  "method_band": {
+    "_comment": "Multiplicative half-width of the low/high band by method, before the freshness penalty.",
+    "official_mau": 1.15,
+    "steam_ccu": 1.7,
+    "steam_owners": 2.0,
+    "units_sold": 2.2,
+    "registered_users": 2.6
+  },
+  "ranking": {
+    "weights": {"sales": 0.4, "youtube_views": 0.45, "player_scale": 0.15},
+    "_comment": "Kat's comment #2: rank Key IPs by sales AND by YouTube views. Scores are log10-scaled then min-max normalised inside the whole IP set, so one 1.5T-view outlier does not flatten everything else."
+  },
+  "youtube": {
+    "search_sample_size": 50,
+    "search_order": "viewCount",
+    "recent_window_days": 90,
+    "_comment": "search.list costs 100 quota units per call, videos.list/channels.list cost 1. See README for the quota budget."
+  }
+}

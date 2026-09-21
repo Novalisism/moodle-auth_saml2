@@ -1,0 +1,559 @@
+{
+  "schema_version": 1,
+  "_comment": "Category / IP catalog for the gaming-YouTube analytics pipeline. Identifiers marked steam_appid=null with on_steam=true are filled in automatically by `run.py resolve`. YouTube channel ids are resolved from handles the same way.",
+  "categories": [
+    {
+      "id": "minecraft",
+      "label": "Minecraft",
+      "label_zh": "Minecraft / 我的世界",
+      "overlap_discount": 0.0,
+      "creator_channels": [
+        {
+          "handle": "@MrBeastGaming",
+          "channel_id": null,
+          "url": "https://www.youtube.com/@MrBeastGaming"
+        }
+      ],
+      "ips": [
+        {
+          "id": "minecraft",
+          "name": "Minecraft",
+          "aliases": [
+            "我的世界",
+            "Minecraft Java Edition",
+            "Minecraft Bedrock"
+          ],
+          "game_type": "sandbox_live",
+          "platforms": [
+            "pc",
+            "console",
+            "mobile"
+          ],
+          "on_steam": false,
+          "steam_appid": null,
+          "steam_note": "Not sold on Steam; units come from Mojang/Microsoft announcements.",
+          "sales_key": "Minecraft",
+          "youtube": {
+            "official_handle": "@minecraft",
+            "official_channel_id": null,
+            "search_queries": [
+              "minecraft",
+              "minecraft gameplay",
+              "我的世界"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "fps",
+      "label": "FPS",
+      "label_zh": "FPS",
+      "overlap_discount": 0.25,
+      "creator_channels": [
+        {
+          "handle": "@Anomaly",
+          "channel_id": null,
+          "url": "https://www.youtube.com/anomaly"
+        }
+      ],
+      "ips": [
+        {
+          "id": "counter_strike",
+          "name": "Counter-Strike 2",
+          "aliases": [
+            "CS2",
+            "CS:GO",
+            "Counter-Strike"
+          ],
+          "game_type": "live_service",
+          "platforms": [
+            "pc"
+          ],
+          "on_steam": true,
+          "steam_appid": 730,
+          "sales_key": null,
+          "youtube": {
+            "official_handle": "@CounterStrike",
+            "official_channel_id": null,
+            "search_queries": [
+              "counter strike 2",
+              "cs2 gameplay",
+              "csgo"
+            ]
+          },
+          "steam_note": "CS2 is free-to-play; there is no units figure to rank on."
+        },
+        {
+          "id": "valorant",
+          "name": "VALORANT",
+          "aliases": [
+            "无畏契约"
+          ],
+          "game_type": "live_service",
+          "platforms": [
+            "pc",
+            "console"
+          ],
+          "on_steam": false,
+          "steam_appid": null,
+          "steam_note": "Riot client only.",
+          "sales_key": null,
+          "youtube": {
+            "official_handle": "@VALORANT",
+            "official_channel_id": null,
+            "search_queries": [
+              "valorant",
+              "valorant gameplay",
+              "无畏契约"
+            ]
+          }
+        },
+        {
+          "id": "call_of_duty",
+          "name": "Call of Duty",
+          "aliases": [
+            "CoD",
+            "Warzone",
+            "使命召唤"
+          ],
+          "game_type": "live_service",
+          "platforms": [
+            "pc",
+            "console",
+            "mobile"
+          ],
+          "on_steam": true,
+          "steam_appid": null,
+          "steam_note": "Resolve the current Call of Duty HQ appid via `resolve`.",
+          "sales_key": "Call of Duty: Modern Warfare II",
+          "youtube": {
+            "official_handle": "@CallofDuty",
+            "official_channel_id": null,
+            "search_queries": [
+              "call of duty",
+              "warzone gameplay",
+              "使命召唤"
+            ]
+          }
+        },
+        {
+          "id": "fortnite",
+          "name": "Fortnite",
+          "aliases": [
+            "堡垒之夜"
+          ],
+          "game_type": "live_service",
+          "platforms": [
+            "pc",
+            "console",
+            "mobile"
+          ],
+          "on_steam": false,
+          "steam_appid": null,
+          "steam_note": "Epic Games Store only.",
+          "sales_key": null,
+          "youtube": {
+            "official_handle": "@Fortnite",
+            "official_channel_id": null,
+            "search_queries": [
+              "fortnite",
+              "fortnite gameplay",
+              "堡垒之夜"
+            ]
+          }
+        },
+        {
+          "id": "overwatch",
+          "name": "Overwatch 2",
+          "aliases": [
+            "Overwatch",
+            "守望先锋"
+          ],
+          "game_type": "live_service",
+          "platforms": [
+            "pc",
+            "console"
+          ],
+          "on_steam": true,
+          "steam_appid": 2357570,
+          "sales_key": null,
+          "youtube": {
+            "official_handle": "@PlayOverwatch",
+            "official_channel_id": null,
+            "search_queries": [
+              "overwatch 2",
+              "overwatch gameplay",
+              "守望先锋"
+            ]
+          }
+        },
+        {
+          "id": "apex_legends",
+          "name": "Apex Legends",
+          "aliases": [
+            "APEX英雄"
+          ],
+          "game_type": "live_service",
+          "platforms": [
+            "pc",
+            "console",
+            "mobile"
+          ],
+          "on_steam": true,
+          "steam_appid": 1172470,
+          "sales_key": null,
+          "youtube": {
+            "official_handle": "@PlayApex",
+            "official_channel_id": null,
+            "search_queries": [
+              "apex legends",
+              "apex legends gameplay",
+              "apex英雄"
+            ]
+          }
+        },
+        {
+          "id": "pubg",
+          "name": "PUBG: Battlegrounds",
+          "aliases": [
+            "绝地求生",
+            "PUBG"
+          ],
+          "game_type": "live_service",
+          "platforms": [
+            "pc",
+            "console",
+            "mobile"
+          ],
+          "on_steam": true,
+          "steam_appid": 578080,
+          "sales_key": "PUBG: Battlegrounds",
+          "youtube": {
+            "official_handle": "@PUBG",
+            "official_channel_id": null,
+            "search_queries": [
+              "pubg",
+              "pubg gameplay",
+              "绝地求生"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "single_player_console",
+      "label": "Single-player / Console",
+      "label_zh": "单机 / 主机",
+      "overlap_discount": 0.15,
+      "creator_channels": [
+        {
+          "handle": "@TheDaniRep",
+          "channel_id": null,
+          "url": "https://www.youtube.com/@TheDaniRep"
+        },
+        {
+          "handle": "@Jelly",
+          "channel_id": null,
+          "url": "https://www.youtube.com/@Jelly"
+        },
+        {
+          "handle": "@VanossGaming",
+          "channel_id": null,
+          "url": "https://www.youtube.com/@VanossGaming"
+        }
+      ],
+      "ips": [
+        {
+          "id": "gta",
+          "name": "Grand Theft Auto V",
+          "aliases": [
+            "GTA",
+            "GTA V",
+            "GTA Online",
+            "侠盗猎车手"
+          ],
+          "game_type": "premium_with_live_mode",
+          "platforms": [
+            "pc",
+            "console"
+          ],
+          "on_steam": true,
+          "steam_appid": 271590,
+          "sales_key": "Grand Theft Auto V",
+          "youtube": {
+            "official_handle": "@RockstarGames",
+            "official_channel_id": null,
+            "search_queries": [
+              "gta 5",
+              "gta online",
+              "侠盗猎车手5"
+            ]
+          }
+        },
+        {
+          "id": "zelda",
+          "name": "The Legend of Zelda",
+          "aliases": [
+            "Zelda",
+            "Tears of the Kingdom",
+            "Breath of the Wild",
+            "塞尔达传说"
+          ],
+          "game_type": "single_player",
+          "platforms": [
+            "console"
+          ],
+          "on_steam": false,
+          "steam_appid": null,
+          "steam_note": "Nintendo first-party; units from Nintendo IR.",
+          "sales_key": "The Legend of Zelda: Breath of the Wild",
+          "youtube": {
+            "official_handle": "@NintendoAmerica",
+            "official_channel_id": null,
+            "search_queries": [
+              "zelda tears of the kingdom",
+              "breath of the wild",
+              "塞尔达传说"
+            ]
+          }
+        },
+        {
+          "id": "soulsborne",
+          "name": "Souls-like (FromSoftware)",
+          "aliases": [
+            "Dark Souls",
+            "Blacksouls",
+            "Elden Ring",
+            "黑魂",
+            "魂系列"
+          ],
+          "game_type": "single_player",
+          "platforms": [
+            "pc",
+            "console"
+          ],
+          "on_steam": true,
+          "steam_appid": 1245620,
+          "companion_appids": [
+            374320
+          ],
+          "sales_key": "Elden Ring",
+          "youtube": {
+            "official_handle": "@BandaiNamcoEntertainmentAmerica",
+            "official_channel_id": null,
+            "search_queries": [
+              "elden ring",
+              "dark souls",
+              "黑暗之魂"
+            ]
+          }
+        },
+        {
+          "id": "the_last_of_us",
+          "name": "The Last of Us",
+          "aliases": [
+            "TLOU",
+            "最后生还者"
+          ],
+          "game_type": "single_player",
+          "platforms": [
+            "pc",
+            "console"
+          ],
+          "on_steam": true,
+          "steam_appid": null,
+          "steam_note": "Resolve `The Last of Us Part I` / `Part II Remastered` appids via `resolve`.",
+          "sales_key": "The Last of Us",
+          "youtube": {
+            "official_handle": "@Naughty_Dog",
+            "official_channel_id": null,
+            "search_queries": [
+              "the last of us game",
+              "last of us part 2",
+              "最后生还者"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "anime",
+      "label": "Anime",
+      "label_zh": "二次元",
+      "overlap_discount": 0.3,
+      "creator_channels": [
+        {
+          "handle": "@KyoStinV",
+          "channel_id": null,
+          "url": "https://www.youtube.com/@KyoStinV"
+        },
+        {
+          "handle": "@IWinToLose",
+          "channel_id": null,
+          "url": "https://www.youtube.com/@IWinToLose"
+        }
+      ],
+      "ips": [
+        {
+          "id": "genshin_impact",
+          "name": "Genshin Impact",
+          "aliases": [
+            "原神"
+          ],
+          "game_type": "gacha_live_service",
+          "platforms": [
+            "pc",
+            "console",
+            "mobile"
+          ],
+          "on_steam": false,
+          "steam_appid": null,
+          "steam_note": "HoYoPlay / Epic / mobile stores; no Steam SKU.",
+          "sales_key": null,
+          "youtube": {
+            "official_handle": "@GenshinImpact",
+            "official_channel_id": null,
+            "search_queries": [
+              "genshin impact",
+              "原神",
+              "genshin gameplay"
+            ]
+          }
+        },
+        {
+          "id": "wuthering_waves",
+          "name": "Wuthering Waves",
+          "aliases": [
+            "鸣潮"
+          ],
+          "game_type": "gacha_live_service",
+          "platforms": [
+            "pc",
+            "mobile"
+          ],
+          "on_steam": true,
+          "steam_appid": null,
+          "steam_note": "Resolve appid via `resolve`.",
+          "sales_key": null,
+          "youtube": {
+            "official_handle": "@WutheringWaves",
+            "official_channel_id": null,
+            "search_queries": [
+              "wuthering waves",
+              "鸣潮",
+              "wuthering waves gameplay"
+            ]
+          }
+        },
+        {
+          "id": "arknights",
+          "name": "Arknights",
+          "aliases": [
+            "明日方舟"
+          ],
+          "game_type": "gacha_live_service",
+          "platforms": [
+            "mobile"
+          ],
+          "on_steam": false,
+          "steam_appid": null,
+          "steam_note": "Mobile only.",
+          "sales_key": null,
+          "youtube": {
+            "official_handle": "@ArknightsOfficial",
+            "official_channel_id": null,
+            "search_queries": [
+              "arknights",
+              "明日方舟",
+              "arknights gameplay"
+            ]
+          }
+        },
+        {
+          "id": "honkai_star_rail",
+          "name": "Honkai: Star Rail",
+          "aliases": [
+            "崩坏：星穹铁道"
+          ],
+          "game_type": "gacha_live_service",
+          "platforms": [
+            "pc",
+            "console",
+            "mobile"
+          ],
+          "on_steam": false,
+          "steam_appid": null,
+          "steam_note": "HoYoPlay / Epic / mobile stores.",
+          "sales_key": null,
+          "youtube": {
+            "official_handle": "@HonkaiStarRail",
+            "official_channel_id": null,
+            "search_queries": [
+              "honkai star rail",
+              "崩坏星穹铁道"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "moba",
+      "label": "MOBA",
+      "label_zh": "MOBA",
+      "overlap_discount": 0.2,
+      "creator_channels": [],
+      "ips": [
+        {
+          "id": "league_of_legends",
+          "name": "League of Legends",
+          "aliases": [
+            "LoL",
+            "英雄联盟"
+          ],
+          "game_type": "live_service",
+          "platforms": [
+            "pc"
+          ],
+          "on_steam": false,
+          "steam_appid": null,
+          "steam_note": "Riot client only.",
+          "sales_key": null,
+          "youtube": {
+            "official_handle": "@LeagueOfLegends",
+            "official_channel_id": null,
+            "search_queries": [
+              "league of legends",
+              "lol gameplay",
+              "英雄联盟"
+            ]
+          }
+        },
+        {
+          "id": "dota2",
+          "name": "Dota 2",
+          "aliases": [
+            "DOTA2",
+            "刀塔"
+          ],
+          "game_type": "live_service",
+          "platforms": [
+            "pc"
+          ],
+          "on_steam": true,
+          "steam_appid": 570,
+          "sales_key": null,
+          "youtube": {
+            "official_handle": "@dota2",
+            "official_channel_id": null,
+            "search_queries": [
+              "dota 2",
+              "dota 2 gameplay",
+              "刀塔2"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
